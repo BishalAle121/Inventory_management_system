@@ -1,6 +1,3 @@
-
-
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:inventorymanagement/core/providers/storage_providers.dart';
@@ -13,6 +10,9 @@ import '../../features/forgot_password/data/forget_password_repository.dart';
 import '../../features/forgot_password/domain/i_ForgetPassword_repository.dart';
 import '../../features/register/data/repositories/registration_repository.dart';
 import '../../features/register/domain/repositories/I_regist_repository.dart';
+import '../../features/shared/application/provider/camera_scann_provider.dart';
+import '../../features/shared/data/repositories/scanner_repository_impl.dart';
+import '../../features/shared/domain/repositories/i_image_upload_and_scanned_repositories.dart';
 import '../network/dio_client.dart';
 
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
@@ -30,19 +30,41 @@ final dioClientProvider = Provider<DioClient>((ref) {
 });
 
 final connectivityStreamProvider = StreamProvider<bool>((ref) {
-  return ref.watch(internetCheckerProvider).onStatusChange.map(
-    (status) => status == InternetConnectionStatus.connected,
-  );
+  return ref
+      .watch(internetCheckerProvider)
+      .onStatusChange
+      .map((status) => status == InternetConnectionStatus.connected);
 });
 
 final registrationRepositoryProvider = Provider<IRegistRepository>((ref) {
   return RegistrationRepository(ref.watch(dioClientProvider));
 });
 
-final forgetPasswordRepositoryProvider = Provider<IForgetPasswordRepository>((ref) {
+final forgetPasswordRepositoryProvider = Provider<IForgetPasswordRepository>((
+  ref,
+) {
   return ForgetPasswordRepository(ref.watch(dioClientProvider));
 });
 
-final changePasswordRepositoryProvider = Provider<IChangePasswordRepository>((ref){
-   return ChangePasswordRepository(ref.watch(dioClientProvider),  ref.watch(tokenServiceProvider),);
+final changePasswordRepositoryProvider = Provider<IChangePasswordRepository>((
+  ref,
+) {
+  return ChangePasswordRepository(
+    ref.watch(dioClientProvider),
+    ref.watch(tokenServiceProvider),
+  );
 });
+
+// dart
+final imageUploadAndScannedRepositoryProvider =
+    Provider<IImageUploadAndScannedRepositories>((ref) {
+      final localDataSource = ref.watch(scannerLocalDataSourceProvider);
+      final cameraService = ref.watch(cameraScannerServiceProvider);
+      final imageService = ref.watch(imageScannerServiceProvider);
+
+      return ScannerRepositoryImpl(
+        localDataSource: localDataSource,
+        cameraScannerService: cameraService,
+        imageScannerService: imageService,
+      );
+    });

@@ -9,16 +9,15 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final  IAuthRepository _repository;
+  final IAuthRepository _repository;
 
-  AuthNotifier(this._repository) : super(const AuthInitial())
-  {
+  AuthNotifier(this._repository) : super(const AuthInitial()) {
     checkAuth();
   }
 
   Future<bool> checkAuth() async {
     final result = await _repository.getCurrentUser();
-    
+
     return result.fold(
       (error) {
         state = const AuthUnauthenticated();
@@ -37,9 +36,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> login(String email, String password) async {
     state = const AuthLoading();
-    
+
     final result = await _repository.login(email, password);
-    
+
     state = result.fold(
       (error) => AuthError(error.message),
       (user) => AuthAuthenticated(user),
@@ -48,20 +47,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<String> logout(String UserId) async {
     state = const AuthLoading();
-    
+
     final result = await _repository.logout(UserId);
-    
-   /* state = result.fold(
-      (error) => AuthError(error.message),
-      (_) => const AuthUnauthenticated(),
-    );*/
     return result.fold(
-          (error) {
+      (error) {
         state = AuthError(error.message);
         return "Logout Failed";
       },
-          (user)
-      {
+      (user) {
         state = const AuthUnauthenticated();
         return "Logout Successfully";
       },

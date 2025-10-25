@@ -28,14 +28,18 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double fontSize = getResponsiveFontSize(20); // or manually use 20 for tablets
-    final double verticalPadding = getProportionateScreenHeight(14); // increase height
-    final double horizontalPadding = getProportionateScreenWidth(16); // increase width
+    final double fontSize = getResponsiveFontSize(
+      20,
+    ); // or manually use 20 for tablets
+    final double verticalPadding = getProportionateScreenHeight(
+      14,
+    ); // increase height
+    final double horizontalPadding = getProportionateScreenWidth(
+      16,
+    ); // increase width
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: getProportionateScreenHeight(8),
-      ),
+      padding: EdgeInsets.symmetric(vertical: getProportionateScreenHeight(8)),
       child: TextFormField(
         controller: controller,
         obscureText: obscureText,
@@ -47,9 +51,7 @@ class CustomTextField extends StatelessWidget {
           hintText: hint,
           suffixIcon: suffixIcon,
           prefixIcon: prefixIcon,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           floatingLabelBehavior: FloatingLabelBehavior.always,
           isDense: false, // 👈 important for taller input
           contentPadding: EdgeInsets.symmetric(
@@ -62,5 +64,4 @@ class CustomTextField extends StatelessWidget {
       ),
     );
   }
-
 }

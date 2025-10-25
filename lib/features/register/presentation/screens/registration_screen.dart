@@ -7,11 +7,14 @@ class RegistrationScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: Center( // Centers content both vertically and horizontally
+      body: Center(
+        // Centers content both vertically and horizontally
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 400), // Optional: set max width
+            constraints: BoxConstraints(
+              maxWidth: 400,
+            ), // Optional: set max width
             child: RegistrationForm(),
           ),
         ),

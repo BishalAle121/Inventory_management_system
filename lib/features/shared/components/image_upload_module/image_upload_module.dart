@@ -1,3 +1,4 @@
+/*
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -78,4 +79,4 @@ Future<ListOfScannedDataAndResponseMessage> uploadImageAndScan(WidgetRef ref) as
   } finally {
     scannerController.dispose();
   }
-}
+}*/

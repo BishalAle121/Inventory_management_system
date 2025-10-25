@@ -1,3 +1,4 @@
+/*
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -462,11 +463,13 @@ class _ScanAreaClipper extends CustomClipper<Path> {
       size,
       size,
     );
-    /*  final rect = Rect.fromCenter(
+    */
+/*  final rect = Rect.fromCenter(
       center: screenSize.center(Offset.zero),
       width: size,
       height: size,
-    );*/
+    );*/ /*
+
     path.addRect(rect);
     return Path.combine(PathOperation.difference, path, Path()..addRect(rect));
   }
@@ -574,3 +577,4 @@ Rect _mapImageRectToWidgetRect(
 
 
 
+*/

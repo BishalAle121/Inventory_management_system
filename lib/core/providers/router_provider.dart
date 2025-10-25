@@ -8,11 +8,11 @@ import '../../features/auth/application/states/auth_state.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/forgot_password/presentation/OtpVerificationScreen/otp_verification_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/installation/prestntation/screens/installation.dart';
+
+import '../../features/installation/prestntation/screens/installation_screen.dart';
 import '../../features/project_inventory_history/prestntation/screens/inventory_hostory.dart';
 import '../../features/register/presentation/screens/registration_screen.dart';
 import '../../features/shared/components/component_button_navigation_bar.dart';
-import '../../features/shared/presentation/screens/resetpassword_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../../features/stock_in_and_out/prestntation/screens/stockinoutscreen.dart';
 import '../exceptions/navigation_error_handler.dart';
@@ -31,10 +31,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/splash',
         builder: (context, state) => const SplashScreen(),
       ),
-      GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginScreen(),
-      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       GoRoute(
         path: '/register',
         builder: (context, state) => RegistrationScreen(),
@@ -43,10 +40,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/otp_verification',
         builder: (context, state) => const OtpVerifyScreen(),
       ),
-      GoRoute(
-        path: '/ResetPasswordScreen',
-        builder: (context, state) => const ResetPasswordScreen(),
-      ),
+      // GoRoute(
+      //   path: '/ResetPasswordScreen',
+      //   builder: (context, state) => const ResetPasswordScreen(),
+      // ),
 
       // ShellRoute: persistent bottom navigation with nested tab routes
       ShellRoute(
@@ -65,7 +62,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           ),
           GoRoute(
             path: '/installation',
-            builder: (context, state) => const Installation(),
+            builder: (context, state) => const InstallationScreen(),
           ),
           GoRoute(
             path: '/history',
@@ -77,9 +74,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
     redirect: router._redirect,
     errorBuilder: NavigationErrorHandler.errorScreen,
-    observers: [
-      NavigationObserver(),
-    ],
+    observers: [NavigationObserver()],
   );
 });
 
@@ -145,7 +140,6 @@ class RouterNotifier extends ChangeNotifier {
         return '/home';
       }
 
-
       return null;
     } catch (e, stackTrace) {
       debugPrint('Navigation error: $e\n$stackTrace');
@@ -160,7 +154,7 @@ class RouterNotifier extends ChangeNotifier {
       '/register',
       '/forgot-password',
       '/otp_verification',
-      '/ResetPasswordScreen'
+      '/ResetPasswordScreen',
     ].contains(path);
   }
 
