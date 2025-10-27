@@ -18,7 +18,7 @@ class CustomBottomNavigationBar extends ConsumerWidget {
         switch (i) {
           case 0:
             // GoRouter.of(context).go('/home');
-            GoRouter.of(context).go('/installation');
+            GoRouter.of(context).go('/home');
             break;
           case 1:
             GoRouter.of(context).go('/stock-in-out');

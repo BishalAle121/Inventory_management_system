@@ -131,14 +131,14 @@ class RouterNotifier extends ChangeNotifier {
 
       if (path == '/splash') return null;
 
-      // if (!_isAuth && !_isPublicRoute(path)) {
-      //   return '/login';
-      // }
+      if (!_isAuth && !_isPublicRoute(path)) {
+        return '/login';
+      }
 
       // if authenticated and on an auth route (optional) you could redirect to home
-      if (!_isAuth && !_isAuthRoute(path)) {
+      if (_isAuth && _isAuthRoute(path)) {
         // return '/home';
-        return '/installation';
+        return '/home';
       }
 
       return null;

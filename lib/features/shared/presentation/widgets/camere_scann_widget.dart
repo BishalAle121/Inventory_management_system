@@ -1,12 +1,13 @@
-import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventorymanagement/core/utils/responsive/screen_size.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../../../../core/providers/storage_providers.dart';
 import '../../../shared/application/state/camera_scanner_state.dart';
-import '../../../shared/domain/entities/scanned_details.dart';
 import '../../application/provider/camera_scann_provider.dart';
+import '../../domain/entities/scanned_details.dart';
 
 class CameraScannerScreen extends ConsumerStatefulWidget {
   const CameraScannerScreen({Key? key}) : super(key: key);
@@ -19,10 +20,11 @@ class CameraScannerScreen extends ConsumerStatefulWidget {
 class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
   late MobileScannerController _controller;
   final Set<String> _alreadyScannedCodes = {};
-  final List<ScannedDetails> scannedList = [];
+  // final List<ScannedDetails> scannedList = [];
 
   bool _isTorchOn = false;
-  final double _scanBoxSize = 390.0;
+  final double _scanBoxSize = getProportionateScreenWidth(360);
+
 
   @override
   void initState() {
@@ -53,14 +55,55 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
     );
   }
 
+  Future<void> _saveData(CameraScannerData state) async {
+    final _databaseHelper = ref.read(databaseHelperProvider);
+    if (state.scannedItems.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No data to save'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    final dataList = state.scannedItems.map((item) => item.toJson()).toList();
+    final response = await _databaseHelper.insertDataList(
+        "SerialNumberStoreTable", dataList);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(response), backgroundColor: Colors.green),
+    );
+    Navigator.pop(context);
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(cameraScannerProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera Scanner'),
+        // title: const Text('Camera Scanner'),
         actions: [
+          TextButton(
+            onPressed: () {
+              if (state is CameraScannerData) {
+                _saveData(state);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('No scanned data available to save'),
+                    backgroundColor: Colors.orange,
+                  ),
+                );
+              }
+            },
+            child: const Text(
+              "Want To Save",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
           IconButton(
             icon: Icon(_isTorchOn ? Icons.flash_on : Icons.flash_off),
             onPressed: _toggleTorch,
@@ -135,7 +178,7 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
         left: 0,
         right: 0,
         height: 200,
-        width: 400,
+        // width: 400,
         child: Container(
           color: Colors.black54,
           child: ListView.builder(
@@ -149,9 +192,7 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => ref
-                      .read(cameraScannerProvider.notifier)
-                      .deleteItem(item, state.scannedCodes),
+                  onPressed: () => ref.read(cameraScannerProvider.notifier).deleteItem(item, state.scannedCodes),
                 ),
               );
             },
