@@ -19,9 +19,10 @@ class CameraScannerScreen extends ConsumerStatefulWidget {
 class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
   late MobileScannerController _controller;
   final Set<String> _alreadyScannedCodes = {};
+  final List<ScannedDetails> scannedList = [];
 
   bool _isTorchOn = false;
-  final double _scanBoxSize = 250.0;
+  final double _scanBoxSize = 390.0;
 
   @override
   void initState() {
@@ -134,6 +135,7 @@ class _CameraScannerScreenState extends ConsumerState<CameraScannerScreen> {
         left: 0,
         right: 0,
         height: 200,
+        width: 400,
         child: Container(
           color: Colors.black54,
           child: ListView.builder(

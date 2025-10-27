@@ -17,7 +17,8 @@ class CustomBottomNavigationBar extends ConsumerWidget {
         ref.read(bottomNavProvider.notifier).setIndex(i);
         switch (i) {
           case 0:
-            GoRouter.of(context).go('/home');
+            // GoRouter.of(context).go('/home');
+            GoRouter.of(context).go('/installation');
             break;
           case 1:
             GoRouter.of(context).go('/stock-in-out');
@@ -31,7 +32,14 @@ class CustomBottomNavigationBar extends ConsumerWidget {
         }
       },
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home, size: 50, color: index == 0 ?kPrimary: Colors.black), label: 'Home'),
+        BottomNavigationBarItem(
+          icon: Icon(
+            Icons.home,
+            size: 50,
+            color: index == 0 ? kPrimary : Colors.black,
+          ),
+          label: 'Home',
+        ),
         BottomNavigationBarItem(
           icon: Image.asset(
             index == 1
@@ -41,16 +49,19 @@ class CustomBottomNavigationBar extends ConsumerWidget {
           label: 'Stock In/Out',
         ),
         BottomNavigationBarItem(
-          icon: Image.asset(index == 2?
-          "assets/button_navigation_bar_icons/installation_color.png":
-          "assets/button_navigation_bar_icons/installation.png"),
+          icon: Image.asset(
+            index == 2
+                ? "assets/button_navigation_bar_icons/installation_color.png"
+                : "assets/button_navigation_bar_icons/installation.png",
+          ),
           label: 'Installation',
         ),
         BottomNavigationBarItem(
           icon: Image.asset(
-              index == 3 ?
-              "assets/button_navigation_bar_icons/installation_history_color.png":
-              "assets/button_navigation_bar_icons/installation_history.png"),
+            index == 3
+                ? "assets/button_navigation_bar_icons/installation_history_color.png"
+                : "assets/button_navigation_bar_icons/installation_history.png",
+          ),
           label: 'All History',
         ),
       ],
