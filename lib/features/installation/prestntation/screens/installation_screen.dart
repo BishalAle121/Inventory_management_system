@@ -20,6 +20,149 @@ class _InstallationScreenState extends ConsumerState<InstallationScreen> {
   final ValueNotifier<List<String>> _descriptionsNotifier = ValueNotifier([]);
   late final DatabaseHelper _databaseHelperProvider;
 
+  @override
+  void initState() {
+    super.initState();
+    _databaseHelperProvider = ref.read(databaseHelperProvider);
+    _loadScannedData();
+  }
+
+  @override
+  void dispose() {
+    _descriptionsNotifier.dispose();
+    super.dispose();
+  }
+
+  List<ScannedDetailsModal> _scannedItems = [];
+
+  Future<void> _loadScannedData() async {
+    final List<Map<String, dynamic>> rawData = await _databaseHelperProvider
+        .readData('SerialNumberStoreTable');
+
+    final List<ScannedDetailsModal> allData = rawData
+        .map((row) => ScannedDetailsModal.fromJson(row))
+        .toList();
+
+    setState(() {
+      _scannedItems.clear();
+      _scannedItems.addAll(allData);
+    });
+  }
+
+  Future<void> _deleteScanned(String serialNumber) async {
+    await _databaseHelperProvider.deleteData(
+      'SerialNumberStoreTable',
+      serialNumber,
+    );
+    _loadScannedData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Scanned Install Devices')),
+      body: Center(
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    // Navigate to camera scanner
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CameraScannerScreen(),
+                      ),
+                    );
+
+                    // ✅ Reload data after returning from camera
+                    _loadScannedData();
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.qr_code, size: 40),
+                      SizedBox(height: 8),
+                      Text("Scan QR or Bar", style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                GestureDetector(
+                  onTap: () async {
+                    try {
+                      // ✅ Call imageUploadAndScan and check if successful
+                      final success = await imageUploadAndScan(context, ref);
+
+                      // ✅ If data was added, reload the list
+                      if (success) {
+                        await _loadScannedData();
+                      }
+                    } catch (e) {
+                      print("Error: $e");
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Error: $e"),
+                            backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 5),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: Column(
+                    children: const [
+                      Icon(Icons.image_outlined, size: 40),
+                      SizedBox(height: 8),
+                      Text("Upload Image", style: TextStyle(fontSize: 18)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: ScannedItemsList(
+                key: ValueKey(_scannedItems.length),
+                formKey: _formKey,
+                scannedList: _scannedItems,
+                onDelete: _deleteScanned,
+                onDescriptionsChanged: (descriptions) {
+                  _descriptionsNotifier.value = descriptions;
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:inventorymanagement/core/utils/local_storage/sqlite_manager/database_helper.dart';
+
+import '../../../../core/providers/storage_providers.dart';
+import '../../../shared/data/models/scanned_details_modal.dart';
+import '../../../shared/presentation/widgets/ScannedDetailsList.dart';
+import '../../../shared/presentation/widgets/camere_scann_widget.dart';
+import '../../../shared/presentation/widgets/image_upload_widget.dart';
+
+class InstallationScreen extends ConsumerStatefulWidget {
+  const InstallationScreen({Key? key}) : super(key: key);
+
+  @override
+  ConsumerState<InstallationScreen> createState() => _InstallationScreenState();
+}
+
+class _InstallationScreenState extends ConsumerState<InstallationScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final ValueNotifier<List<String>> _descriptionsNotifier = ValueNotifier([]);
+  late final DatabaseHelper _databaseHelperProvider;
+
   initState() {
     super.initState();
     _databaseHelperProvider = ref.read(databaseHelperProvider);
@@ -53,7 +196,7 @@ class _InstallationScreenState extends ConsumerState<InstallationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Scanner Menu')),
+      appBar: AppBar(title: const Text('Scanned Install Devices')),
       body: Center(
         child: Column(
           children: [
@@ -121,3 +264,4 @@ class _InstallationScreenState extends ConsumerState<InstallationScreen> {
     );
   }
 }
+*/
